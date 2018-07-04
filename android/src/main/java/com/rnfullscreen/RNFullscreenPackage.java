@@ -13,7 +13,7 @@ public class RNFullscreenPackage implements ReactPackage {
   @Override
   public List<NativeModule> createNativeModules(ReactApplicationContext reactContext) {
     List<NativeModule> modules = new ArrayList<>();
-    modules.add(new RNfullscreenModule(reactContext));
+    modules.add(new RNFullscreenModule(reactContext));
     return modules;
   }
 
