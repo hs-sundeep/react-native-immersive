@@ -1,21 +1,20 @@
 {
-  "name": "react-native-immersive",
+  "name": "react-native-fullscreen",
   "version": "1.1.0",
-  "author": "MockingBot",
+  "author": "Sundeep Babbur",
   "license": "MIT",
-  "description": "Add Toggle for Android Immersive FullScreen Layout",
+  "description": "Add Toggle for Android FullScreen Layout",
   "keywords": [
     "react-component",
     "react-native",
     "android",
-    "immersive",
     "menu-bar",
     "fullscreen"
   ],
-  "homepage": "https://github.com/mockingbot/react-native-immersive",
+  "homepage": "https://github.com/hs-sundeep/react-native-immersive",
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@github.com/mockingbot/react-native-immersive.git"
+    "url": "git+ssh://git@github.com/hs-sundeep/react-native-immersive.git"
   },
   "main": "index.js",
   "scripts": {

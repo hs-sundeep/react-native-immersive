@@ -1,32 +1,39 @@
 import { NativeModules, DeviceEventEmitter, Platform } from 'react-native'
-const { RNImmersive } = NativeModules
+const { RNFullscreen } = NativeModules
 
-const unSupportedError = __DEV__
-  ? () => { throw new Error('[react-native-immersive] should not be called on iOS') }
-  : () => {}
+const warnInIOS = () => {
+  if(__DEV__){
+    console.warn(
+      'Fullscreen module is not supported in IOS.' +
+      'This message will disappear in a release build.'
+    );
+  }
+}
 
 let isListenerEnabled = false
 
-const Immersive = Platform.OS === 'android' ? {
-  on: () => RNImmersive.setImmersive(true),
-  off: () => RNImmersive.setImmersive(false),
-  setImmersive: (isOn) => RNImmersive.setImmersive(isOn),
-  getImmersive: () => RNImmersive.getImmersive(), // do not always match actual display state
-  addImmersiveListener: (listener) => {
-    DeviceEventEmitter.addListener('@@IMMERSIVE_STATE_CHANGED', listener)
+const Fullscreen = Platform.OS === 'android' ? {
+  on: () => RNFullscreen.setFullscreen(true),
+  off: () => RNFullscreen.setFullscreen(false),
+  setFullscreen: (isOn) => RNFullscreen.setFullscreen(isOn),
+  getFullscreen: () => RNFullscreen.getFullscreen(), // do not always match actual display state
+  addFullscreenListener: (listener) => {
+    DeviceEventEmitter.addListener('@@FULLSCREEN_STATE_CHANGED', listener)
     if (isListenerEnabled) return
     isListenerEnabled = true
-    RNImmersive.addImmersiveListener()
+    RNFullscreen.addFullscreenListener()
   },
-  removeImmersiveListener: (listener) => DeviceEventEmitter.removeListener('@@IMMERSIVE_STATE_CHANGED', listener)
+  removeFullscreenListener: (listener) => {
+    DeviceEventEmitter.removeListener('@@FULLSCREEN_STATE_CHANGED', listener)
+  }
 } : {
-  on: unSupportedError,
-  off: unSupportedError,
-  setImmersive: unSupportedError,
-  getImmersive: unSupportedError,
-  addImmersiveListener: unSupportedError,
-  removeImmersiveListener: unSupportedError
+  on: warnInIOS,
+  off: warnInIOS,
+  setFullscreen: warnInIOS,
+  getFullscreen: warnInIOS,
+  addFullscreenListener: warnInIOS,
+  removeFullscreenListener: warnInIOS
 }
 
-export { Immersive }
-export default Immersive
+export { Fullscreen }
+export default Fullscreen

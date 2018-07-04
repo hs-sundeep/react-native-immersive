@@ -1,4 +1,4 @@
-package com.rnimmersive;
+package com.rnfullscreen;
 
 import java.util.*;
 
@@ -8,12 +8,12 @@ import com.facebook.react.bridge.JavaScriptModule;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.uimanager.ViewManager;
 
-public class RNImmersivePackage implements ReactPackage {
+public class RNFullscreenPackage implements ReactPackage {
 
   @Override
   public List<NativeModule> createNativeModules(ReactApplicationContext reactContext) {
     List<NativeModule> modules = new ArrayList<>();
-    modules.add(new RNImmersiveModule(reactContext));
+    modules.add(new RNfullscreenModule(reactContext));
     return modules;
   }
 

@@ -1,4 +1,4 @@
-package com.rnimmersive;
+package com.rnfullscreen;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
@@ -19,26 +19,26 @@ import com.facebook.react.modules.core.DeviceEventManagerModule;
 /**
  * {@link NativeModule} that allows changing the appearance of the menu bar.
  */
-public class RNImmersiveModule extends ReactContextBaseJavaModule {
+public class RNFullscreenModule extends ReactContextBaseJavaModule {
   private static final String ERROR_NO_ACTIVITY = "E_NO_ACTIVITY";
-  private static final String ERROR_NO_ACTIVITY_MESSAGE = "Tried to set immersive while not attached to an Activity";
-  private static final int UI_FLAG_IMMERSIVE = View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+  private static final String ERROR_NO_ACTIVITY_MESSAGE =
+    "Tried to set fullscreen while not attached to an Activity";
+  private static final int UI_FLAG_FULLSCREEN = View.SYSTEM_UI_FLAG_LAYOUT_STABLE
     | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
     | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
     | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION // hide nav bar
     | View.SYSTEM_UI_FLAG_FULLSCREEN // hide status bar
-    | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
 
-  private static RNImmersiveModule SINGLETON = null;
+  private static RNFullscreenModule SINGLETON = null;
 
   private ReactContext _reactContext = null;
-  private boolean _isImmersiveOn = false;
+  private boolean _isFullscreenOn = false;
 
-  public static RNImmersiveModule getInstance () {
+  public static RNFullscreenModule getInstance () {
     return SINGLETON;
   }
 
-  public RNImmersiveModule(ReactApplicationContext reactContext) {
+  public RNFullscreenModule(ReactApplicationContext reactContext) {
     super(reactContext);
 
     _reactContext = reactContext;
@@ -53,29 +53,31 @@ public class RNImmersiveModule extends ReactContextBaseJavaModule {
 
   @Override
   public String getName() {
-    return "RNImmersive";
+    return "RNFullscreen";
   }
 
   @ReactMethod
-  public void setImmersive(final boolean isOn, final Promise res) {
-    _setImmersive(isOn, res);
+  public void setFullscreen(final boolean isOn, final Promise res) {
+    _setFullscreen(isOn, res);
   }
   @ReactMethod
-  public void getImmersive(final Promise res) {
-    _getImmersive(res);
+  public void getFullscreen(final Promise res) {
+    _getFullscreen(res);
   }
   @ReactMethod
-  public void addImmersiveListener() {
-    _addImmersiveListener();
+  public void addFullscreenListener() {
+    _addFullscreenListener();
   }
 
-  public void emitImmersiveStateChangeEvent() {
+  public void emitFullscreenStateChangeEvent() {
     if (_reactContext != null) {
-      _reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit("@@IMMERSIVE_STATE_CHANGED", null);
+      _reactContext
+        .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
+        .emit("@@FULLSCREEN_STATE_CHANGED", null);
     }
   }
 
-  private void _setImmersive(final boolean isOn, final Promise res) {
+  private void _setFullscreen(final boolean isOn, final Promise res) {
     final Activity activity = getCurrentActivity();
     if (activity == null) {
       res.reject(ERROR_NO_ACTIVITY, ERROR_NO_ACTIVITY_MESSAGE);
@@ -87,15 +89,16 @@ public class RNImmersiveModule extends ReactContextBaseJavaModule {
         @TargetApi(Build.VERSION_CODES.KITKAT)
         @Override
         public void run() {
-          _isImmersiveOn = isOn;
-          activity.getWindow().getDecorView().setSystemUiVisibility(isOn ? UI_FLAG_IMMERSIVE : View.SYSTEM_UI_FLAG_VISIBLE);
+          _isFullscreenOn = isOn;
+          activity.getWindow().getDecorView().setSystemUiVisibility(isOn ?
+            UI_FLAG_FULLSCREEN : View.SYSTEM_UI_FLAG_VISIBLE);
           res.resolve(null);
         }
       });
     }
   }
 
-  private void _getImmersive(final Promise res) {
+  private void _getFullscreen(final Promise res) {
     final Activity activity = getCurrentActivity();
     if (activity == null) {
       res.reject(ERROR_NO_ACTIVITY, ERROR_NO_ACTIVITY_MESSAGE);
@@ -107,11 +110,13 @@ public class RNImmersiveModule extends ReactContextBaseJavaModule {
         @TargetApi(Build.VERSION_CODES.KITKAT)
         @Override
         public void run() {
-          int visibility = activity.getWindow().getDecorView().getSystemUiVisibility();
-          boolean isImmersiveOn = 0 != (visibility & UI_FLAG_IMMERSIVE);
+          int visibility = activity.getWindow()
+            .getDecorView()
+            .getSystemUiVisibility();
+          boolean isFullscreenOn = 0 != (visibility & UI_FLAG_FULLSCREEN);
 
           WritableMap map = Arguments.createMap();
-          map.putBoolean("isImmersiveOn", isImmersiveOn);
+          map.putBoolean("isFullscreenOn", isFullscreenOn);
 
           res.resolve(map);
         }
@@ -119,7 +124,7 @@ public class RNImmersiveModule extends ReactContextBaseJavaModule {
     }
   }
 
-  private void _addImmersiveListener() {
+  private void _addFullscreenListener() {
     final Activity activity = getCurrentActivity();
     if (activity == null) return;
 
@@ -131,10 +136,10 @@ public class RNImmersiveModule extends ReactContextBaseJavaModule {
           activity.getWindow().getDecorView().setOnSystemUiVisibilityChangeListener(new View.OnSystemUiVisibilityChangeListener() {
             @Override
             public void onSystemUiVisibilityChange(int visibility) {
-              boolean isImmersiveOn = 0 != (visibility & UI_FLAG_IMMERSIVE);
+              boolean isFullscreenOn = 0 != (visibility & UI_FLAG_FULLSCREEN);
 
-              if (isImmersiveOn != _isImmersiveOn) {
-                emitImmersiveStateChangeEvent();
+              if (isFullscreenOn != _isFullscreenOn) {
+                emitFullscreenStateChangeEvent();
               }
             }
           });
